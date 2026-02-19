@@ -107,15 +107,21 @@ export default function Dashboard() {
 
     return (
         <div className="content">
-            {/* Search bar */}
-            <div className="search-bar-row">
-                <input
-                    className="search-input"
-                    placeholder="Search Covers (e.g. Domestic, Boat Racing, International)"
-                    value={search}
-                    onChange={e => handleSearch(e.target.value)}
-                />
-                <button className="btn-clear" onClick={handleClearSearch}>Clear Search</button>
+            {/* Page Header */}
+            <div className="page-header">
+                <div>
+                    <div className="page-title">Dashboard</div>
+                    <div className="page-subtitle">Overview of your insurance portfolio</div>
+                </div>
+                <div className="search-bar-row" style={{ marginBottom: 0, marginLeft: 'auto' }}>
+                    <input
+                        className="search-input"
+                        placeholder="Search covers…"
+                        value={search}
+                        onChange={e => handleSearch(e.target.value)}
+                    />
+                    {search && <button className="btn-clear" onClick={handleClearSearch}>Clear</button>}
+                </div>
             </div>
 
             <div className="dashboard-grid">
@@ -124,44 +130,41 @@ export default function Dashboard() {
                     {/* Policy Chart Card */}
                     <div className="chart-card">
                         <div className="chart-card-header">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <input
-                                    className="chart-search"
-                                    placeholder="Search Covers"
-                                    value={search}
-                                    onChange={e => handleSearch(e.target.value)}
-                                />
-                                {chartLoading && <div className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }}></div>}
+                            <div>
+                                <div className="chart-card-title">Policy Status Overview</div>
+                                <div className="chart-card-subtitle">
+                                    {search.trim() ? `Filtered: "${search}"` : 'All cover types'}
+                                    {chartLoading && <span style={{ marginLeft: 6, color: '#f97316' }}>· Updating…</span>}
+                                </div>
                             </div>
-                            <span style={{ color: '#94a3b8', fontSize: '1.1rem', cursor: 'pointer' }}>≡</span>
+                            <input
+                                className="chart-search"
+                                placeholder="Search…"
+                                value={search}
+                                onChange={e => handleSearch(e.target.value)}
+                            />
                         </div>
-                        <ResponsiveContainer width="100%" height={260}>
-                            <BarChart data={barChartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                                <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                                <YAxis tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false}
-                                    label={{ value: 'Number of Policies', angle: -90, position: 'insideLeft', fontSize: 11, fill: '#94a3b8', dy: 50 }} />
-                                <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 13 }}
-                                    formatter={(value, name) => [value, name]}
-                                    cursor={{ fill: 'rgba(249,115,22,0.05)' }} />
-                                <Legend wrapperStyle={{ fontSize: 13, paddingTop: 12 }} />
-                                {showDomestic && (
-                                    <Bar dataKey="Domestic" fill="#f97316" radius={[4, 4, 0, 0]}
-                                        label={{ position: 'insideTop', fontSize: 11, fill: 'white', fontWeight: 700, dy: 4 }} />
-                                )}
-                                {showInternational && (
-                                    <Bar dataKey="International" fill="#3b82f6" radius={[4, 4, 0, 0]}
-                                        label={{ position: 'insideTop', fontSize: 11, fill: 'white', fontWeight: 700, dy: 4 }} />
-                                )}
-                            </BarChart>
-                        </ResponsiveContainer>
-                        <div style={{ textAlign: 'center', fontSize: '0.78rem', color: '#94a3b8', marginTop: '4px' }}>
-                            Policy Status
-                            {search.trim() && (
-                                <span style={{ marginLeft: 8, color: '#f97316', fontWeight: 600 }}>
-                                    · Filtered: "{search}"
-                                </span>
-                            )}
+                        <div className="chart-card-inner">
+                            <ResponsiveContainer width="100%" height={255}>
+                                <BarChart data={barChartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                                    <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                                    <Tooltip
+                                        contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 13, boxShadow: '0 4px 20px rgba(0,0,0,.1)' }}
+                                        formatter={(value, name) => [value, name]}
+                                        cursor={{ fill: 'rgba(249,115,22,0.05)', borderRadius: 4 }} />
+                                    <Legend wrapperStyle={{ fontSize: 12, paddingTop: 10 }} />
+                                    {showDomestic && (
+                                        <Bar dataKey="Domestic" fill="#f97316" radius={[5, 5, 0, 0]}
+                                            label={{ position: 'insideTop', fontSize: 11, fill: 'white', fontWeight: 700, dy: 4 }} />
+                                    )}
+                                    {showInternational && (
+                                        <Bar dataKey="International" fill="#3b82f6" radius={[5, 5, 0, 0]}
+                                            label={{ position: 'insideTop', fontSize: 11, fill: 'white', fontWeight: 700, dy: 4 }} />
+                                    )}
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
 
@@ -244,56 +247,41 @@ export default function Dashboard() {
                 <div className="dashboard-right">
                     {/* Wallet Card */}
                     <div className="wallet-card">
-                        <div className="wallet-label">Wallet</div>
-                        <div className="wallet-sublabel">Available Balance</div>
-                        <div className="wallet-amount">{formatINR(wallet?.balance || 0)}</div>
+                        <div className="wallet-shine"></div>
+                        <div style={{ position: 'relative', zIndex: 1 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.8, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '.08em' }}>ASC360</div>
+                                <div className="wallet-label">Wallet</div>
+                            </div>
+                            <div className="wallet-amount" style={{ textAlign: 'left', marginTop: '1rem', fontSize: '1.6rem' }}>
+                                {formatINR(wallet?.balance || 0)}
+                            </div>
+                            <div className="wallet-footer">
+                                <span>Available Balance</span>
+                                <span style={{ fontSize: '0.8rem', background: 'rgba(255,255,255,.2)', padding: '2px 8px', borderRadius: 6 }}>₹ INR</span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Stats Grid - updates with search filter */}
+                    {/* Stats Grid */}
                     <div className="stats-grid">
-                        <div className="stat-card stat-active">
-                            <div className="stat-card-bar"></div>
-                            <div className="stat-card-header">
-                                <span className="stat-card-label">Active</span>
-                                <div className="stat-card-icon" style={{ background: '#dcfce7' }}>
-                                    <MdTrendingUp style={{ color: '#22c55e' }} />
+                        {[
+                            { cls: 'stat-active', label: 'Active', icon: <MdTrendingUp />, color: '#22c55e', val: displayStats?.active ?? 0, sub: 'policies' },
+                            { cls: 'stat-yet', label: 'Yet to Active', icon: <MdStar />, color: '#fb7185', val: displayStats?.yetToActive ?? 0, sub: 'pending start' },
+                            { cls: 'stat-matured', label: 'Matured', icon: <MdAccessTime />, color: '#60a5fa', val: displayStats?.matured ?? 0, sub: 'completed' },
+                            { cls: 'stat-pending', label: 'Pending', icon: <MdPending />, color: '#f59e0b', val: displayStats?.pending ?? 0, sub: 'in review' },
+                        ].map(item => (
+                            <div key={item.cls} className={`stat-card ${item.cls}`}>
+                                <div className="stat-card-header">
+                                    <span className="stat-card-label">{item.label}</span>
+                                    <div className="stat-card-icon">
+                                        <span style={{ color: item.color, fontSize: '1rem' }}>{item.icon}</span>
+                                    </div>
                                 </div>
+                                <div className="stat-card-value">{item.val}</div>
+                                <div className="stat-card-trend">{item.sub}</div>
                             </div>
-                            <div className="stat-card-value">{displayStats?.active ?? 0}</div>
-                        </div>
-
-                        <div className="stat-card stat-yet">
-                            <div className="stat-card-bar"></div>
-                            <div className="stat-card-header">
-                                <span className="stat-card-label">Yet to Active</span>
-                                <div className="stat-card-icon" style={{ background: '#fce7f3' }}>
-                                    <MdStar style={{ color: '#fb7185' }} />
-                                </div>
-                            </div>
-                            <div className="stat-card-value">{displayStats?.yetToActive ?? 0}</div>
-                        </div>
-
-                        <div className="stat-card stat-matured">
-                            <div className="stat-card-bar"></div>
-                            <div className="stat-card-header">
-                                <span className="stat-card-label">Matured</span>
-                                <div className="stat-card-icon" style={{ background: '#dbeafe' }}>
-                                    <MdAccessTime style={{ color: '#60a5fa' }} />
-                                </div>
-                            </div>
-                            <div className="stat-card-value">{displayStats?.matured ?? 0}</div>
-                        </div>
-
-                        <div className="stat-card stat-pending">
-                            <div className="stat-card-bar"></div>
-                            <div className="stat-card-header">
-                                <span className="stat-card-label">Pending</span>
-                                <div className="stat-card-icon" style={{ background: '#fef9c3' }}>
-                                    <MdPending style={{ color: '#f59e0b' }} />
-                                </div>
-                            </div>
-                            <div className="stat-card-value">{displayStats?.pending ?? 0}</div>
-                        </div>
+                        ))}
                     </div>
 
                     {/* Filter label */}
