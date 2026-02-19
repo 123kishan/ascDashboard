@@ -31,6 +31,16 @@ app.use('/api/assign-plan', planRoutes);
 app.use('/api/user-specific-payments', paymentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
+// Root route (for deployment health checks)
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Welcome to ASC360 Backend API',
+        environment: process.env.NODE_ENV || 'development',
+        docs: 'https://github.com/123kishan/ascDashboard/blob/main/backend/README.md'
+    });
+});
+
 // Health check
 app.get('/api/health', (req, res) => res.json({ success: true, message: 'ASC360 API running', timestamp: new Date() }));
 
